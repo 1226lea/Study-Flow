@@ -27,3 +27,7 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+
+LOGIN_REDIRECT_URL = 'resource_list'   # Jump back to the homepage after successful login
+LOGOUT_REDIRECT_URL = 'login'          # After successful logout, redirect to the login page
+LOGIN_URL = 'login'                    # When an unlogged-in user attempts to access a protected page, redirect them back to the login page页
