@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Resource - StudyFlow</title>
+</head>
+<body>
+    <h1>📤 Upload New Learning Resource</h1>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>
+            <label>Title:</label><br>
+            <input type="text" name="title" required>
+        </p>
+        <p>
+            <label>Category:</label><br>
+            <select name="category" required>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label>Description (Optional):</label><br>
+            <textarea name="description"></textarea>
+        </p>
+        <p>
+            <label>Select File (PDF, Image, etc.):</label><br>
+            <input type="file" name="resource_file" required>
+        </p>
+        <button type="submit" style="background-color: #28a745; color: white; padding: 10px; border: none; cursor: pointer;">
+            Confirm Upload
+        </button>
+    </form>
+    
+    <br>
+    <a href="{% url 'resource_list' %}">← Back to Library</a>
+</body>
+</html>
