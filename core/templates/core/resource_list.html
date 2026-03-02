@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - StudyFlow</title>
+</head>
+<body>
+    <h2>Welcome to the StudyFlow Homepage!</h2>
+    
+    {% if user.is_authenticated %}
+        <p style="color: green;">Success! You are logged in as: <strong>{{ user.username }}</strong></p>
+        
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Sign Out</button>
+        </form>
+    {% else %}
+        <p>You are not logged in. <a href="{% url 'login' %}">Sign In</a></p>
+    {% endif %}
+
+    <hr>
+    <p><i>(Resources list will be displayed here later by YaQiWang and HangZhou)</i></p>
+
+</body>
+</html>
