@@ -101,3 +101,25 @@ def toggle_save_resource(request, resource_id):
         
     # Redirect the user back to the page they were just on
     return redirect(request.META.get('HTTP_REFERER', 'resource_list'))
+
+# Delete Resource Logic (with security check)
+
+@login_required
+def delete_resource(request, resource_id):
+    # 1. Try to find the resource (return 404 if not found)
+    resource = get_object_or_404(LearningResource, id=resource_id)
+    
+    # 2. Security Check
+    if resource.uploader != request.user:
+        # If not, show an error message and refuse deletion
+        messages.error(request, "Permission denied. You can only delete your own resources.")
+        return redirect('profile')
+        
+    # 3. If the user owns it, proceed with deletion
+    resource.delete()
+    
+    # Show a success message
+    messages.success(request, f"Successfully deleted '{resource.title}'.")
+    
+    # Redirect back to the user's profile page
+    return redirect('profile')
