@@ -12,4 +12,5 @@ urlpatterns = [
     path('upload/', views.upload_resource, name='upload_resource'),
     path('profile/', views.profile_view, name='profile'),
     path('resource/<int:resource_id>/save/', views.toggle_save_resource, name='toggle_save_resource'),
+    path('resource/<int:resource_id>/delete/', views.delete_resource, name='delete_resource'),
 ]
