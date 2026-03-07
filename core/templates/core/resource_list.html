@@ -8,8 +8,18 @@
 <body>
     <header>
         <h1>📚 StudyFlow Resource Library</h1>
+
+        {% if messages %}
+            <ul style="color: green; font-weight: bold; list-style-type: none; padding: 0;">
+                {% for message in messages %}
+                    <li>✅ {{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% if user.is_authenticated %}
             <p>Welcome, <strong>{{ user.username }}</strong>! 
+
+                <a href="{% url 'profile' %}">👤 My Profile</a> |
                 <a href="{% url 'upload_resource' %}">Upload New</a> | 
                 <form action="{% url 'logout' %}" method="post" style="display:inline;">
                     {% csrf_token %}
@@ -37,6 +47,12 @@
                         View/Download File
                     </a>
                     
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'toggle_save_resource' resource.id %}" style="background: #ffc107; color: #333; padding: 5px 10px; text-decoration: none; border-radius: 3px; margin-left: 10px;">
+                        ⭐ Save / Unsave
+                    </a>
+                    {% endif %}
+
                     <p style="font-size: 0.8em; color: #666;">
                         Uploaded by {{ resource.uploader.username }} on {{ resource.upload_time|date:"Y-m-d H:i" }}
                     </p>

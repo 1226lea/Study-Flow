@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile - StudyFlow</title>
+</head>
+<body>
+    <h2>👤 {{ user.username }}'s Profile</h2>
+    
+    <h3>📤 My Uploaded Resources</h3>
+    <ul>
+        {% for resource in uploaded_resources %}
+            <li>{{ resource.title }} (Uploaded on {{ resource.upload_time|date:"Y-m-d" }})</li>
+        {% empty %}
+            <li>You haven't uploaded any resources yet.</li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+
+    <h3>⭐ My Saved Resources</h3>
+    <ul>
+        {% for item in saved_items %}
+            <li>
+                {{ item.resource.title }} 
+                <a href="{% url 'toggle_save_resource' item.resource.id %}" style="color: red; margin-left: 10px;">[Unsave]</a>
+            </li>
+        {% empty %}
+            <li>You haven't saved anything yet.</li>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href="{% url 'resource_list' %}">⬅️ Back to Home</a>
+</body>
+</html>

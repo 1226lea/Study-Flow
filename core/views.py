@@ -1,10 +1,9 @@
 from django.contrib.auth.decorators import login_required
-from .models import Category, LearningResource
-from django.shortcuts import render, redirect
+from .models import Category, LearningResource, SavedResource
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
-from .models import LearningResource
 
 
 def resource_list(request):
@@ -64,3 +63,41 @@ def upload_resource(request):
 
     categories = Category.objects.all()
     return render(request, 'core/upload.html', {'categories': categories})
+
+# User Profile and Save Resource Logic
+
+@login_required
+def profile_view(request):
+    # 1. Get resources uploaded by the current user
+    uploaded_resources = LearningResource.objects.filter(uploader=request.user).order_by('-upload_time')
+    
+    # 2. Get resources saved by the current user
+    saved_items = SavedResource.objects.filter(user=request.user).order_by('-saved_at')
+    
+    # 3. Pass data to the template
+    context = {
+        'uploaded_resources': uploaded_resources,
+        'saved_items': saved_items,
+    }
+    return render(request, 'core/profile.html', context)
+
+
+@login_required
+def toggle_save_resource(request, resource_id):
+    # Find the requested resource or return 404
+    resource = get_object_or_404(LearningResource, id=resource_id)
+    
+    # Check if the user has already saved this resource
+    saved_item = SavedResource.objects.filter(user=request.user, resource=resource).first()
+    
+    if saved_item:
+        # If already saved, clicking again removes it (Unsave)
+        saved_item.delete()
+        messages.success(request, f"Removed '{resource.title}' from your saved items.")
+    else:
+        # If not saved, create a new save record
+        SavedResource.objects.create(user=request.user, resource=resource)
+        messages.success(request, f"Saved '{resource.title}' to your profile!")
+        
+    # Redirect the user back to the page they were just on
+    return redirect(request.META.get('HTTP_REFERER', 'resource_list'))

@@ -23,3 +23,21 @@ class LearningResource(models.Model):
 
     def __str__(self):
         return self.title
+
+# Model for users to save/bookmark resources
+class SavedResource(models.Model):
+    # The user who saved the resource
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='saved_items')
+    
+    # The specific resource that was saved (linked to YaQi's model)
+    resource = models.ForeignKey(LearningResource, on_delete=models.CASCADE, related_name='saved_by_users')
+    
+    # Timestamp for when the resource was saved
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        # Crucial: Prevents a user from saving the exact same resource multiple times
+        unique_together = ('user', 'resource')
+
+    def __str__(self):
+        return f"{self.user.username} saved {self.resource.title}"
