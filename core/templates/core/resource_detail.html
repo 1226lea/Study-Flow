@@ -40,9 +40,14 @@
                 {% endif %}
 
                 {% if request.user == resource.uploader %}
-                    <a href="{% url 'delete_resource' resource.id %}" class="btn btn-danger ms-auto" onclick="return confirm('Are you sure you want to delete this resource? This cannot be undone.');">
-                        <i class="bi bi-trash3-fill"></i> Delete (Owner Only)
-                    </a>
+                    <div class="ms-auto d-flex gap-2">
+                        <a href="{% url 'edit_resource' resource.id %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <a href="{% url 'delete_resource' resource.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this resource? This cannot be undone.');">
+                            <i class="bi bi-trash3-fill"></i> Delete
+                        </a>
+                    </div>
                 {% endif %}
             </div>
 

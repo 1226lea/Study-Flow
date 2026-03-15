@@ -12,12 +12,26 @@
 </div>
 
 <form method="get" class="row g-2 mb-4">
-    <div class="col-12 col-md-9">
-        <label for="search" class="form-label">Search resources</label>
-        <input type="text" id="search" name="search" class="form-control" placeholder="Enter keywords">
+    <div class="col-12 col-md-5">
+        <div class="input-group">
+            <span class="input-group-text bg-white text-muted border-end-0"><i class="bi bi-search"></i></span>
+            <input type="text" id="search" name="search" class="form-control border-start-0 ps-0" placeholder="Search keywords..." value="{{ request.GET.search }}">
+        </div>
     </div>
-    <div class="col-12 col-md-3 d-flex align-items-end">
-        <button class="btn btn-outline-primary w-100" type="submit">Search</button>
+    
+    <div class="col-12 col-md-4">
+        <select id="category" name="category" class="form-select">
+            <option value="">📂 All Categories</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="col-12 col-md-3">
+        <button class="btn btn-primary w-100 shadow-sm" type="submit">Filter & Search</button>
     </div>
 </form>
 
