@@ -7,14 +7,26 @@ from django.contrib import messages
 
 
 def resource_list(request):
+    # Fetch all resources (newest first) and all categories
+    resources = LearningResource.objects.all().order_by('-upload_time')
+    categories = Category.objects.all()
 
-    query = request.GET.get('search')
-    if query:
-        resources = LearningResource.objects.filter(title__icontains=query)
-    else:
-        resources = LearningResource.objects.all().order_by('-upload_time')
+    # Handle keyword search (User Story C2)
+    search_query = request.GET.get('search')
+    if search_query:
+        resources = resources.filter(title__icontains=search_query)
 
-    return render(request, 'core/resource_list.html', {'resources': resources})
+    # Handle category filtering (User Story S2)
+    category_id = request.GET.get('category')
+    if category_id:
+        resources = resources.filter(category_id=category_id)
+
+    # Pass the data to the frontend template
+    context = {
+        'resources': resources,
+        'categories': categories,
+    }
+    return render(request, 'core/resource_list.html', context)
 
 
 def register_view(request):
@@ -123,3 +135,54 @@ def delete_resource(request, resource_id):
     
     # Redirect back to the user's profile page
     return redirect('profile')
+
+def resource_detail(request, resource_id):
+    # Retrieve the resource by ID, and return a 404 error if it is not found
+    resource = get_object_or_404(LearningResource, id=resource_id)
+    
+    context = {
+        'resource': resource,
+    }
+    return render(request, 'core/resource_detail.html', context)
+
+@login_required
+def edit_resource(request, resource_id):
+    # Fetch the resource object
+    resource = get_object_or_404(LearningResource, id=resource_id)
+    
+    # Security check: Deny access if the user is not the uploader
+    if request.user != resource.uploader:
+        messages.error(request, "Access Denied: You can only edit your own resources.")
+        return redirect('resource_detail', resource_id=resource.id)
+
+    # Process the submitted form data
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        category_id = request.POST.get('category')
+        resource_file = request.FILES.get('resource_file')
+
+        if title:
+            # Update resource attributes
+            resource.title = title
+            resource.description = description
+            if category_id:
+                resource.category_id = category_id
+            
+            # Only replace the old file if the user actually uploaded a new one
+            if resource_file:
+                resource.file = resource_file
+                
+            resource.save()
+            messages.success(request, "Resource updated successfully!")
+            return redirect('resource_detail', resource_id=resource.id)
+        else:
+            messages.error(request, "Title is required.")
+
+    # GET request: Prepare category data for the frontend dropdown menu
+    categories = Category.objects.all()
+    context = {
+        'resource': resource,
+        'categories': categories,
+    }
+    return render(request, 'core/edit_resource.html', context)

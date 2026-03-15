@@ -13,4 +13,6 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile'),
     path('resource/<int:resource_id>/save/', views.toggle_save_resource, name='toggle_save_resource'),
     path('resource/<int:resource_id>/delete/', views.delete_resource, name='delete_resource'),
+    path('resource/<int:resource_id>/', views.resource_detail, name='resource_detail'),
+    path('resource/<int:resource_id>/edit/', views.edit_resource, name='edit_resource'),
 ]
