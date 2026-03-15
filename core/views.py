@@ -123,3 +123,12 @@ def delete_resource(request, resource_id):
     
     # Redirect back to the user's profile page
     return redirect('profile')
+
+def resource_detail(request, resource_id):
+    # Retrieve the resource by ID, and return a 404 error if it is not found
+    resource = get_object_or_404(LearningResource, id=resource_id)
+    
+    context = {
+        'resource': resource,
+    }
+    return render(request, 'core/resource_detail.html', context)

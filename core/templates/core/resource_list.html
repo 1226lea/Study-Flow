@@ -35,7 +35,11 @@
     <div class="col-12 col-md-6 col-lg-4">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h5 class="card-title">{{ resource.title }}</h5>
+                <h5 class="card-title">
+                    <a href="{% url 'resource_detail' resource.id %}" class="text-decoration-none text-dark hover-primary">
+                        {{ resource.title }}
+                    </a>
+                </h5>
 
                 {% if resource.category %}
                 <span class="badge text-bg-secondary mb-2">{{ resource.category.name }}</span>
@@ -45,14 +49,23 @@
                     {{ resource.description|default:"No description provided."|truncatewords:20 }}
                 </p>
 
-                <p class="small text-muted">
+                <p class="small text-muted mb-3">
                     Uploaded by {{ resource.uploader.username }}<br>
                     {{ resource.upload_time|date:"Y-m-d H:i" }}
                 </p>
 
-                {% if resource.file %}
-                <a href="{{ resource.file.url }}" target="_blank" class="btn btn-outline-primary btn-sm">View File</a>
-                {% endif %}
+                <div class="d-flex gap-2">
+                    <a href="{% url 'resource_detail' resource.id %}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-eye"></i> View Details
+                    </a>
+                    
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'toggle_save_resource' resource.id %}" class="btn btn-warning btn-sm text-dark">
+                        <i class="bi bi-star-fill"></i> Save / Unsave
+                    </a>
+                    {% endif %}
+                </div>
+
             </div>
         </div>
     </div>

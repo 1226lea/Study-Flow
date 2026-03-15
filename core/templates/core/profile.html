@@ -1,44 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>My Profile - StudyFlow</title>
-</head>
-<body>
-    <h2>👤 {{ user.username }}'s Profile</h2>
+{% extends 'base.html' %}
+
+{% block title %}My Profile - StudyFlow{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="mb-1"><i class="bi bi-person-circle text-primary me-2"></i>{{ user.username }}'s Profile</h1>
+    <p class="text-muted">Manage your uploaded and saved resources here.</p>
+</div>
+
+<ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="uploaded-tab" data-bs-toggle="tab" data-bs-target="#uploaded" type="button" role="tab" aria-controls="uploaded" aria-selected="true">
+            <i class="bi bi-cloud-arrow-up-fill me-1"></i> My Uploaded Resources
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="saved-tab" data-bs-toggle="tab" data-bs-target="#saved" type="button" role="tab" aria-controls="saved" aria-selected="false">
+            <i class="bi bi-star-fill text-warning me-1"></i> My Saved Resources
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="profileTabsContent">
     
-    <h3>📤 My Uploaded Resources</h3>
-    <ul>
-        {% for resource in uploaded_resources %}
-            <li style="margin-bottom: 10px;">
-                {{ resource.title }} (Uploaded on {{ resource.upload_time|date:"Y-m-d" }})
-                
-                <a href="{% url 'delete_resource' resource.id %}" 
-                   style="color: white; background-color: #dc3545; padding: 3px 8px; text-decoration: none; border-radius: 4px; margin-left: 15px; font-size: 0.9em;"
-                   onclick="return confirm('Are you sure you want to delete this resource? This action cannot be undone.');">
-                   🗑️ Delete
-                </a>
-            </li>
-        {% empty %}
-            <li>You haven't uploaded any resources yet.</li>
-        {% endfor %}
-    </ul>
+    <div class="tab-pane fade show active" id="uploaded" role="tabpanel" aria-labelledby="uploaded-tab">
+        {% if uploaded_resources %}
+        <div class="list-group shadow-sm border-0">
+            {% for resource in uploaded_resources %}
+            <div class="list-group-item d-flex justify-content-between align-items-center p-3 border-light">
+                <div>
+                    <h5 class="mb-1">{{ resource.title }}</h5>
+                    <small class="text-muted">Uploaded on {{ resource.upload_time|date:"Y-m-d" }}</small>
+                </div>
+                <div>
+                    <a href="{% url 'delete_resource' resource.id %}" 
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Are you sure you want to delete this resource? This action cannot be undone.');">
+                        <i class="bi bi-trash3-fill"></i> Delete
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center text-muted py-5">
+                <i class="bi bi-inbox fs-1 text-secondary mb-3 d-block"></i>
+                You haven't uploaded any resources yet. <br>
+                <a href="{% url 'upload_resource' %}" class="btn btn-outline-primary mt-3">Upload One Now</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
 
-    <hr>
+    <div class="tab-pane fade" id="saved" role="tabpanel" aria-labelledby="saved-tab">
+        {% if saved_items %}
+        <div class="list-group shadow-sm border-0">
+            {% for item in saved_items %}
+            <div class="list-group-item d-flex justify-content-between align-items-center p-3 border-light">
+                <div>
+                    <h5 class="mb-1">{{ item.resource.title }}</h5>
+                    <small class="text-muted">Saved Resource</small>
+                </div>
+                <div>
+                    <a href="{% url 'toggle_save_resource' item.resource.id %}" class="btn btn-sm btn-outline-warning text-dark">
+                        <i class="bi bi-star-fill text-warning"></i> Unsave
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center text-muted py-5">
+                <i class="bi bi-bookmark-x fs-1 text-secondary mb-3 d-block"></i>
+                You haven't saved anything yet. <br>
+                <a href="{% url 'resource_list' %}" class="btn btn-outline-primary mt-3">Browse Library</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
 
-    <h3>⭐ My Saved Resources</h3>
-    <ul>
-        {% for item in saved_items %}
-            <li>
-                {{ item.resource.title }} 
-                <a href="{% url 'toggle_save_resource' item.resource.id %}" style="color: red; margin-left: 10px;">[Unsave]</a>
-            </li>
-        {% empty %}
-            <li>You haven't saved anything yet.</li>
-        {% endfor %}
-    </ul>
-
-    <br>
-    <a href="{% url 'resource_list' %}">⬅️ Back to Home</a>
-</body>
-</html>
+</div>
+{% endblock %}
