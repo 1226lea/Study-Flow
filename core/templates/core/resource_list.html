@@ -20,7 +20,7 @@
     </div>
     
     <div class="col-12 col-md-4">
-        <select id="category" name="category" class="form-select">
+        <select id="category" name="category" class="form-select" aria-label="Filter by Category">
             <option value="">📂 All Categories</option>
             {% for cat in categories %}
                 <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>
@@ -49,11 +49,11 @@
     <div class="col-12 col-md-6 col-lg-4">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h5 class="card-title">
+                <h3 class="card-title">
                     <a href="{% url 'resource_detail' resource.id %}" class="text-decoration-none text-dark hover-primary">
                         {{ resource.title }}
                     </a>
-                </h5>
+                </h3>
 
                 {% if resource.category %}
                 <span class="badge text-bg-secondary mb-2">{{ resource.category.name }}</span>
