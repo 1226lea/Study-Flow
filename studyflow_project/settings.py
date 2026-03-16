@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-p7-g7fds@z4#@j((+da$td2rp^umr20wg_&6%kqd_iey1q*57y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['studyflow2026.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
